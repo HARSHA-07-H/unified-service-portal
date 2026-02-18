@@ -1,13 +1,22 @@
 {
-  "name": "vite-project",
+  "name": "unified-service-portal",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "main": "app/electron/main.js",
+  "author": "Unified Service Portal Team",
+  "description": "Unified Service Portal Desktop Application",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:dev": "electron .",
+    "electron:build": "npm run build:prod && electron-builder",
+    "electron:build:win": "npm run build:prod && electron-builder --win",
+    "electron:build:linux": "npm run build:prod && electron-builder --linux",
+    "package": "npm run build:prod && electron-builder --win --linux"
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -19,6 +28,8 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",

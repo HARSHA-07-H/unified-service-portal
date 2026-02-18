@@ -1,0 +1,80 @@
+appId: com.unified.serviceportal
+productName: UnifiedServicePortal
+copyright: Copyright © 2026
+directories:
+  output: release
+  buildResources: build
+files:
+  - package.json
+  - app/**/*
+  - dist/**/*
+  - "!app/resources/README.md"
+  - "!**/*.map"
+  - "!**/*.md"
+extraResources:
+  - from: "../demo/demo/target/service.jar"
+    to: "backend/service.jar"
+    filter: "**/*"
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.png
+  artifactName: "${productName}-${version}-${arch}.${ext}"
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: "Unified Service Portal"
+  installerIcon: build/icon.png
+  uninstallerIcon: build/icon.png
+  license: LICENSE.txt
+portable:
+  artifactName: "${productName}-${version}-${arch}-portable.${ext}"
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+    - target: rpm
+      arch:
+        - x64
+  icon: build/icon.png
+  category: Utility
+  artifactName: "${productName}-${version}-${arch}.${ext}"
+  desktop:
+    Name: Unified Service Portal
+    Type: Application
+    Terminal: false
+appImage:
+  license: LICENSE.txt
+deb:
+  depends:
+    - libgtk-3-0
+    - libnotify4
+    - libnss3
+    - libxss1
+    - libxtst6
+    - xdg-utils
+    - libatspi2.0-0
+    - libuuid1
+rpm:
+  depends:
+    - gtk3
+    - libnotify
+    - nss
+    - libXScrnSaver
+    - libXtst
+    - xdg-utils
+    - at-spi2-core
+    - libuuid
+compression: maximum
+publish: null
