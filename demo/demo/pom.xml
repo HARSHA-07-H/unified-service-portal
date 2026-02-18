@@ -100,7 +100,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <executable>true</executable>
                     <mainClass>com.example.demo.DemoApplication</mainClass>
                     <excludes>
                         <exclude>
