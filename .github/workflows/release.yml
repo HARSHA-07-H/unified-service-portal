@@ -58,6 +58,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: 'vite-project/package-lock.json'
 
       - name: Install dependencies
         working-directory: vite-project
@@ -96,6 +97,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: 'vite-project/package-lock.json'
 
       - name: Download backend JAR
         uses: actions/download-artifact@v4
@@ -148,6 +150,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: 'vite-project/package-lock.json'
 
       - name: Download backend JAR
         uses: actions/download-artifact@v4
