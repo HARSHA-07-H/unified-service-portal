@@ -1,0 +1,257 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+
+jobs:
+  build-backend:
+    name: Build Backend JAR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build backend JAR
+        working-directory: demo/demo
+        run: mvn clean package -DskipTests
+
+      - name: Check JAR size
+        run: |
+          JAR_SIZE=$(du -h demo/demo/target/service.jar | cut -f1)
+          echo "Backend JAR size: $JAR_SIZE"
+          ls -lh demo/demo/target/service.jar
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: demo/demo/target/service.jar
+          retention-days: 1
+
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: vite-project/package-lock.json
+
+      - name: Install dependencies
+        working-directory: vite-project
+        run: npm ci
+
+      - name: Build production frontend
+        working-directory: vite-project
+        run: npm run build:prod
+
+      - name: Check build size
+        working-directory: vite-project
+        run: |
+          echo "Frontend build size:"
+          du -sh dist
+          ls -lh dist/
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: vite-project/dist
+          retention-days: 1
+
+  package-windows:
+    name: Package for Windows
+    needs: [build-backend, build-frontend]
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: vite-project/package-lock.json
+
+      - name: Download backend JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: demo/demo/target
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: vite-project/dist
+
+      - name: Install dependencies
+        working-directory: vite-project
+        run: npm ci
+
+      - name: Build Windows packages
+        working-directory: vite-project
+        run: npm run electron:build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check package sizes
+        working-directory: vite-project
+        run: |
+          echo "Windows packages:"
+          dir release\*.exe
+
+      - name: Upload Windows installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-packages
+          path: |
+            vite-project/release/*.exe
+          retention-days: 7
+
+  package-linux:
+    name: Package for Linux
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: vite-project/package-lock.json
+
+      - name: Download backend JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: demo/demo/target
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: vite-project/dist
+
+      - name: Install dependencies
+        working-directory: vite-project
+        run: npm ci
+
+      - name: Build Linux packages
+        working-directory: vite-project
+        run: npm run electron:build:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check package sizes
+        working-directory: vite-project
+        run: |
+          echo "Linux packages:"
+          ls -lh release/*.{AppImage,deb,rpm} || true
+
+      - name: Upload Linux packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            vite-project/release/*.AppImage
+            vite-project/release/*.deb
+            vite-project/release/*.rpm
+          retention-days: 7
+
+  create-release:
+    name: Create GitHub Release
+    needs: [package-windows, package-linux]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Windows packages
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-packages
+          path: release-assets
+
+      - name: Download Linux packages
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-packages
+          path: release-assets
+
+      - name: List release assets
+        run: |
+          echo "Release assets:"
+          ls -lh release-assets/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-assets/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## Unified Service Portal Release
+            
+            This release includes:
+            - Windows installer (NSIS) and portable version
+            - Linux packages (AppImage, .deb, .rpm)
+            - Embedded backend and frontend
+            - No external dependencies required (Java runtime bundled)
+            
+            ### Installation Instructions
+            
+            **Windows:**
+            - Download `UnifiedServicePortal-*-Setup.exe` for installer
+            - Or download `UnifiedServicePortal-*-portable.exe` for portable version
+            - Run the installer or portable executable
+            
+            **Linux:**
+            - **AppImage** (Universal): Download, make executable (`chmod +x`), and run
+            - **Debian/Ubuntu**: Download `.deb` and install with `sudo dpkg -i`
+            - **Fedora/RHEL**: Download `.rpm` and install with `sudo rpm -i`
+            
+            ### System Requirements
+            - Windows 10/11 (64-bit) or Linux (64-bit)
+            - 4GB RAM minimum (8GB recommended)
+            - 500MB free disk space
+            - Java 17 or higher (bundled in packages)
+            
+            See USER_GUIDE.md for detailed instructions.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

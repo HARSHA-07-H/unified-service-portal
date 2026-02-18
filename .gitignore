@@ -30,3 +30,13 @@ Thumbs.db
 # Build
 dist/
 build/
+
+# Electron
+out/
+release/
+app/frontend/
+logs/
+data/
+
+# Backend JAR (for local testing only)
+backend/
