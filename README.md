@@ -36,32 +36,28 @@ A complete desktop application for managing users and services, built with React
 
 ### For End Users
 
+**📥 [See Complete Download Guide](DOWNLOAD_GUIDE.md)** - Know exactly what to download for your platform!
+
 #### Windows
-1. Download `UnifiedServicePortal-X.X.X-Setup.exe` from [Releases](https://github.com/HARSHA-07-H/unified-service-portal/releases)
+1. Download `UnifiedServicePortal-X.X.X-x64-Setup.exe` from [Releases](https://github.com/HARSHA-07-H/unified-service-portal/releases)
 2. Run the installer
 3. Launch from Start Menu or Desktop shortcut
 
 #### Linux (Ubuntu/Debian)
 ```bash
-# Download .deb package
-wget https://github.com/HARSHA-07-H/unified-service-portal/releases/download/vX.X.X/UnifiedServicePortal-X.X.X.deb
-
-# Install
+# Download .deb package from Releases page, then:
 sudo dpkg -i UnifiedServicePortal-X.X.X.deb
-
-# Run
 unified-service-portal
 ```
 
 #### Linux (Universal - AppImage)
 ```bash
-# Download AppImage
-wget https://github.com/HARSHA-07-H/unified-service-portal/releases/download/vX.X.X/UnifiedServicePortal-X.X.X.AppImage
-
-# Make executable and run
+# Download AppImage from Releases page, then:
 chmod +x UnifiedServicePortal-X.X.X.AppImage
 ./UnifiedServicePortal-X.X.X.AppImage
 ```
+
+**💡 Not sure which file to download?** Check [DOWNLOAD_GUIDE.md](DOWNLOAD_GUIDE.md) for a complete breakdown!
 
 ### Default Login
 ```
