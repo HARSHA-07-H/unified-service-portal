@@ -321,7 +321,7 @@ npm install
 sudo apt install -y libgtk-3-dev libnotify-dev libnss3 libxss1
 
 # Clear electron cache
-rm -rf ~/. electron
+rm -rf ~/.electron
 npm run electron:build
 ```
 

@@ -20,7 +20,7 @@ const backendJarPath = isDev
 
 const frontendPath = isDev
   ? path.join(appPath, 'dist', 'index.html')
-  : path.join(appPath, 'frontend', 'index.html');
+  : path.join(appPath, 'dist', 'index.html');
 
 // Ensure logs directory exists
 const logsDir = path.join(app.getPath('userData'), 'logs');
