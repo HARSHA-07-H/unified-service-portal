@@ -1,0 +1,121 @@
+/* Login page background */
+.login-container {
+  min-height: 100vh;
+width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Arial, sans-serif;
+}
+
+/* Login card */
+.login-card {
+  background: white;
+  width: 320px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Title */
+.login-card h2 {
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+/* Inputs */
+.login-card input {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Button */
+.login-card button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-card button:hover {
+  background-color: #125aa3;
+}
+
+.login-card button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Form group */
+.form-group {
+  margin-bottom: 10px;
+}
+
+/* Input error state */
+.login-input.error {
+  border: 2px solid #d32f2f;
+  background-color: #ffebee;
+}
+
+/* Error message */
+.error-message {
+  color: #d32f2f;
+  font-size: 12px;
+  display: block;
+  text-align: left;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+/* Status message */
+.message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+  border: 1px solid #81c784;
+}
+
+.message.error {
+  background-color: #ffcdd2;
+  color: #c62828;
+  border: 1px solid #ef5350;
+}
+/* Info box for admin login */
+.info-box {
+  background-color: #e3f2fd;
+  border-left: 4px solid #1976d2;
+  border-radius: 5px;
+  padding: 12px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.info-text {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #1565c0;
+}
+
+.info-text strong {
+  font-weight: 600;
+}
+
+.info-text.warning-text {
+  color: #f57c00;
+}

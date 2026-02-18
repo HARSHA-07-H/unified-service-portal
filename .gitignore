@@ -1,0 +1,32 @@
+# Node modules
+node_modules/
+package-lock.json
+yarn.lock
+
+# Maven
+target/
+.classpath
+.project
+.settings/
+*.class
+*.jar
+*.war
+*.ear
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.env
+.env.local
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Build
+dist/
+build/
